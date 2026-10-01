@@ -1,0 +1,6 @@
+
+# Vorschau-Fassung. Sie zeigt dasselbe wie https://www.lisareiter.com,
+# soll aber nicht indexiert werden und der echten Seite keine
+# Konkurrenz machen.
+User-agent: *
+Disallow: /

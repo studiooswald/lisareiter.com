@@ -1,0 +1,337 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Aus dem Vault erzeugt. Nicht von Hand aendern — die Datei wird bei jedem
+# Build neu geschrieben, damit die Auswahllisten nicht vom Vault abdriften.
+# Quelle: src/admin/config.yml.njk, Listen aus lib/vault.js (cms).
+#
+# Grundsatz: Obsidian bleibt die Quelle. Dieses CMS schreibt in dieselben
+# Markdown-Dateien. Felder, die hier nicht stehen, bleiben beim Speichern
+# unangetastet — Sveltia uebernimmt den Rest der Datei unveraendert.
+# ─────────────────────────────────────────────────────────────────────────────
+
+backend:
+  name: github
+  repo: studiooswald/Lisa-vault
+  branch: main
+  # Noch kein Anmelde-Helfer eingetragen (lib/site.json → cmsAuthUrl).
+  # Solange gilt: nur „Mit Zugriffstoken anmelden" funktioniert.
+  commit_messages:
+    create: "{{collection}} angelegt: {{slug}}"
+    update: "{{collection}} geaendert: {{slug}}"
+    delete: "{{collection}} geloescht: {{slug}}"
+    uploadMedia: "Bild hinzugefuegt: {{path}}"
+    deleteMedia: "Bild entfernt: {{path}}"
+
+# Bilder landen flach in der Bilddatenbank. Die Datenschicht findet ein Bild
+# ueber seinen Dateinamen, der Unterordner ist reine Ordnung — einsortieren
+# kann man spaeter in Obsidian, ohne dass etwas bricht.
+media_folder: "Image Database"
+public_folder: "Image Database"
+
+# Dateinamen: Umlaute bleiben, Leerzeichen werden zu Bindestrichen.
+slug:
+  encoding: unicode
+  clean_accents: false
+
+
+
+collections:
+  # ── Werke ──────────────────────────────────────────────────────────────────
+  - name: works
+    label: Arbeiten
+    label_singular: Arbeit
+    folder: Works
+    path: "{{Year}}/{{slug}}"
+    slug: "{{Title}}"
+    identifier_field: Title
+    summary: "{{Title}} · {{Year}}"
+    create: true
+    sortable_fields: [Year, Title]
+    fields:
+      - { name: type, widget: hidden, default: work }
+      - { name: Title, label: Titel, widget: string, required: true }
+      - { name: Year, label: Jahr, widget: number, value_type: int, min: 1990, max: 2100, required: true }
+      - name: Publish
+        label: Auf der Website zeigen
+        widget: boolean
+        default: false
+        hint: "Solange das aus ist, steht die Arbeit nur im Vault."
+      - { name: Featured, label: Hervorgehoben, widget: boolean, default: false, required: false }
+      - name: Series
+        label: Werkgruppe
+        widget: select
+        required: false
+        options:
+          - { label: "Fotografie", value: "[[Fotografie]]" }
+          - { label: "Keramik", value: "[[Keramik]]" }
+          - { label: "Objekte & Skulpturen", value: "[[Objekte & Skulpturen]]" }
+          - { label: "Papier & Edition", value: "[[Papier & Edition]]" }
+          - { label: "Site-specific & Interventionen", value: "[[Site-specific & Interventionen]]" }
+          - { label: "Textil – Strumpfhosen & Nylon", value: "[[Textil – Strumpfhosen & Nylon]]" }
+      - name: ShownIn
+        label: Gezeigt in
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: "26 - tacit, puuul.space Wien", value: "[[26 - tacit, puuul.space Wien]]" }
+          - { label: "26 - Solo, Sehsaal Wien", value: "[[26 - Solo, Sehsaal Wien]]" }
+          - { label: "26 - sculptür gate, Showroom Eva Blut Wien", value: "[[26 - sculptür gate, Showroom Eva Blut Wien]]" }
+          - { label: "26 - planetfall, PLANET H Wien", value: "[[26 - planetfall, PLANET H Wien]]" }
+          - { label: "26 - grain of view, Steinstein Krems", value: "[[26 - grain of view, Steinstein Krems]]" }
+          - { label: "26 - Duo mit Sonnhild Essl, OÖ Kunstverein Linz", value: "[[26 - Duo mit Sonnhild Essl, OÖ Kunstverein Linz]]" }
+          - { label: "25 - If fox and hare were to say goodnight, GIG Ottensheim", value: "[[25 - If fox and hare were to say goodnight, GIG Ottensheim]]" }
+          - { label: "25 - HEAT, EFES Linz", value: "[[25 - HEAT, EFES Linz]]" }
+          - { label: "25 - gimme shelter, Sehsaal Wien", value: "[[25 - gimme shelter, Sehsaal Wien]]" }
+          - { label: "25 - Förderungspreis des Landes Steiermark, Neue Galerie Graz", value: "[[25 - Förderungspreis des Landes Steiermark, Neue Galerie Graz]]" }
+          - { label: "25 - Edition, GIG Ottensheim", value: "[[25 - Edition, GIG Ottensheim]]" }
+          - { label: "24 - Vienna Contemporary, Kunstraum Steiermark", value: "[[24 - Vienna Contemporary, Kunstraum Steiermark]]" }
+          - { label: "24 - vertical limbo, Akademie Graz", value: "[[24 - vertical limbo, Akademie Graz]]" }
+          - { label: "24 - In-, out- & onwards, bb15 Linz", value: "[[24 - In-, out- & onwards, bb15 Linz]]" }
+          - { label: "24 - grids, breath and a windowsill, Art Quarter Budapest", value: "[[24 - grids, breath and a windowsill, Art Quarter Budapest]]" }
+          - { label: "23 - Premio Faenza, MIC Faenza", value: "[[23 - Premio Faenza, MIC Faenza]]" }
+          - { label: "23 - gig pap, GIG Ottensheim", value: "[[23 - gig pap, GIG Ottensheim]]" }
+          - { label: "23 - Duo mit Tom Marseiler, Kunstuniversität Linz", value: "[[23 - Duo mit Tom Marseiler, Kunstuniversität Linz]]" }
+          - { label: "23 - BestOFF, MAERZ Linz", value: "[[23 - BestOFF, MAERZ Linz]]" }
+          - { label: "23 - Alles neu the big change, Kunstgarten Graz", value: "[[23 - Alles neu the big change, Kunstgarten Graz]]" }
+          - { label: "22 - What the fem, Nordico Linz", value: "[[22 - What the fem, Nordico Linz]]" }
+          - { label: "22 - Wesen & Kreaturen Kapitel 2, rotor Graz", value: "[[22 - Wesen & Kreaturen Kapitel 2, rotor Graz]]" }
+          - { label: "22 - Kunstfenster Narrenkastl, Frohnleiten", value: "[[22 - Kunstfenster Narrenkastl, Frohnleiten]]" }
+          - { label: "22 - Gold aus Blei, Salzamt Linz", value: "[[22 - Gold aus Blei, Salzamt Linz]]" }
+          - { label: "22 - Gift, Schaumbad Graz", value: "[[22 - Gift, Schaumbad Graz]]" }
+          - { label: "22 - Der Schnee rund ums Haus, Parallel Vienna", value: "[[22 - Der Schnee rund ums Haus, Parallel Vienna]]" }
+          - { label: "22 - BestOFF, Kunstuniversität Linz", value: "[[22 - BestOFF, Kunstuniversität Linz]]" }
+          - { label: "21 - PK K, Haus Wien", value: "[[21 - PK K, Haus Wien]]" }
+          - { label: "21 - Mutantengarten, Afro-Asiatisches Institut Graz", value: "[[21 - Mutantengarten, Afro-Asiatisches Institut Graz]]" }
+          - { label: "21 - Ladies and Gentlemen, Neue Galerie Graz", value: "[[21 - Ladies and Gentlemen, Neue Galerie Graz]]" }
+          - { label: "21 - Banale, Graz", value: "[[21 - Banale, Graz]]" }
+          - { label: "21 - A-8020, Kulturvermittlung Steiermark", value: "[[21 - A-8020, Kulturvermittlung Steiermark]]" }
+          - { label: "20 - Parallel Vienna, Kunsthalle Graz", value: "[[20 - Parallel Vienna, Kunsthalle Graz]]" }
+          - { label: "20 - Being, Afro-Asiatisches Institut Graz", value: "[[20 - Being, Afro-Asiatisches Institut Graz]]" }
+          - { label: "19 - Part of the Game, Kunsthalle Graz", value: "[[19 - Part of the Game, Kunsthalle Graz]]" }
+          - { label: "19 - Die Haut ist eine Leinwand, Das Uhrwerk Graz", value: "[[19 - Die Haut ist eine Leinwand, Das Uhrwerk Graz]]" }
+          - { label: "18 - Rostfest, Altes Rathaus Eisenerz", value: "[[18 - Rostfest, Altes Rathaus Eisenerz]]" }
+          - { label: "18 - Come Back, Galerie Eugen Lendl Graz", value: "[[18 - Come Back, Galerie Eugen Lendl Graz]]" }
+          - { label: "17 - Nach Strich und Faden II, Galerie Salon Gartenhaus Parterre Berlin", value: "[[17 - Nach Strich und Faden II, Galerie Salon Gartenhaus Parterre Berlin]]" }
+          - { label: "17 - Füll die Lück, Bordsteinschwalbe Graz", value: "[[17 - Füll die Lück, Bordsteinschwalbe Graz]]" }
+          - { label: "17 - Big Wirbel, Kunsthaus Graz", value: "[[17 - Big Wirbel, Kunsthaus Graz]]" }
+          - { label: "17 - AUSS(INN)EN, Kunsthalle Graz", value: "[[17 - AUSS(INN)EN, Kunsthalle Graz]]" }
+          - { label: "16 - Nach Strich und Faden, Gotische Halle Graz", value: "[[16 - Nach Strich und Faden, Gotische Halle Graz]]" }
+          - { label: "16 - Das graphische Element, Kulturforum Zagreb", value: "[[16 - Das graphische Element, Kulturforum Zagreb]]" }
+      - name: Material
+        label: Material
+        widget: list
+        required: false
+        field: { name: material, label: Material, widget: string }
+        hint: "Ein Eintrag je Zeile, so wie er auf der Website stehen soll."
+      - { name: Dimensions, label: "Maße", widget: string, required: false }
+      - { name: Credit, label: Fotocredit, widget: string, required: false }
+      - name: Excerpt
+        label: Kurzbeschreibung
+        widget: text
+        required: false
+        hint: "Ein Satz für Suchmaschinen und geteilte Links."
+      - name: Slug
+        label: Adresse auf der Website
+        widget: string
+        required: false
+        hint: "Leer lassen. Nur ausfüllen, wenn eine bestehende Adresse erhalten bleiben muss."
+      # ── nur intern ──
+      - { name: Price, label: Preis, widget: string, required: false, hint: "Steht nur im Vault. Auf der Website erscheint der Wert nie — das sichert der Leak-Test bei jedem Build ab." }
+      - { name: Sold, label: Verkauft, widget: boolean, default: false, required: false, hint: "Steht nur im Vault. Auf der Website erscheint der Wert nie — das sichert der Leak-Test bei jedem Build ab." }
+      - { name: Owner, label: "Besitz / Sammlung", widget: string, required: false, hint: "Steht nur im Vault. Auf der Website erscheint der Wert nie — das sichert der Leak-Test bei jedem Build ab." }
+      - { name: Location, label: Lagerort, widget: string, required: false, hint: "Steht nur im Vault. Auf der Website erscheint der Wert nie — das sichert der Leak-Test bei jedem Build ab." }
+      - name: body
+        label: Bilder und Text
+        widget: markdown
+        modes: [raw]
+        required: false
+        hint: "Die Bilder stehen als Einbettung mit Alt-Text dahinter. Text unter „### Publication Text:“ erscheint auf der Werkseite."
+
+  # ── Ausstellungen ──────────────────────────────────────────────────────────
+  - name: exhibitions
+    label: Ausstellungen
+    label_singular: Ausstellung
+    folder: Exhibitions
+    slug: "{{Title}}"
+    identifier_field: Title
+    summary: "{{Title}} · {{OpeningDate}}"
+    create: true
+    sortable_fields: [OpeningDate, Title]
+    fields:
+      - { name: type, widget: hidden, default: exhibition }
+      - { name: Title, label: Titel, widget: string, required: true }
+      - { name: TitleEN, label: "Titel englisch", widget: string, required: false, hint: "Nur wenn er sich vom deutschen unterscheidet." }
+      - { name: Publish, label: Auf der Website zeigen, widget: boolean, default: false }
+      - { name: Upcoming, label: "Als „kommend“ hervorheben", widget: boolean, default: false, required: false }
+      # Datumsfelder bewusst als Text: aeltere Eintraege tragen nur eine
+      # Jahreszahl, ein Datumswaehler wuerde die beim Speichern zerstoeren.
+      - { name: OpeningDate, label: Beginn, widget: string, required: false, hint: "2026-04-13 — oder nur 2022, wenn der Tag unbekannt ist." }
+      - { name: EndingDate, label: Ende, widget: string, required: false, hint: "Leer: gilt ab Beginn 92 Tage als laufend." }
+      - { name: Vernissage, label: "Eröffnung", widget: string, required: false }
+      - name: Venue
+        label: Ort
+        widget: select
+        required: false
+        options:
+          - { label: "Afro-Asiatisches Institut", value: "[[Afro-Asiatisches Institut]]" }
+          - { label: "Akademie Graz", value: "[[Akademie Graz]]" }
+          - { label: "Altes Rathaus Eisenerz", value: "[[Altes Rathaus Eisenerz]]" }
+          - { label: "Art Quarter Budapest", value: "[[Art Quarter Budapest]]" }
+          - { label: "bb15", value: "[[bb15]]" }
+          - { label: "Bordsteinschwalbe", value: "[[Bordsteinschwalbe]]" }
+          - { label: "Das Uhrwerk", value: "[[Das Uhrwerk]]" }
+          - { label: "EFES", value: "[[EFES]]" }
+          - { label: "Galerie Eugen Lendl", value: "[[Galerie Eugen Lendl]]" }
+          - { label: "Galerie Salon Gartenhaus Parterre", value: "[[Galerie Salon Gartenhaus Parterre]]" }
+          - { label: "GIG – Galerie im Glashaus", value: "[[GIG – Galerie im Glashaus]]" }
+          - { label: "Gotische Halle", value: "[[Gotische Halle]]" }
+          - { label: "Haus Wien", value: "[[Haus Wien]]" }
+          - { label: "Kunstgarten Graz", value: "[[Kunstgarten Graz]]" }
+          - { label: "Kunsthalle Graz", value: "[[Kunsthalle Graz]]" }
+          - { label: "Kunsthaus Graz", value: "[[Kunsthaus Graz]]" }
+          - { label: "Kunstuniversität Linz", value: "[[Kunstuniversität Linz]]" }
+          - { label: "MAERZ", value: "[[MAERZ]]" }
+          - { label: "MIC Faenza", value: "[[MIC Faenza]]" }
+          - { label: "Narrenkastl", value: "[[Narrenkastl]]" }
+          - { label: "Neue Galerie Graz", value: "[[Neue Galerie Graz]]" }
+          - { label: "Nordico", value: "[[Nordico]]" }
+          - { label: "OÖ Kunstverein", value: "[[OÖ Kunstverein]]" }
+          - { label: "Österreichisches Kulturforum Zagreb", value: "[[Österreichisches Kulturforum Zagreb]]" }
+          - { label: "Parallel Vienna", value: "[[Parallel Vienna]]" }
+          - { label: "PLANET H", value: "[[PLANET H]]" }
+          - { label: "puuul.space", value: "[[puuul.space]]" }
+          - { label: "rotor", value: "[[rotor]]" }
+          - { label: "Salzamt", value: "[[Salzamt]]" }
+          - { label: "Schaumbad Graz", value: "[[Schaumbad Graz]]" }
+          - { label: "Sehsaal", value: "[[Sehsaal]]" }
+          - { label: "Showroom Eva Blut", value: "[[Showroom Eva Blut]]" }
+          - { label: "STEIN*STEIN", value: "[[STEIN*STEIN]]" }
+          - { label: "Vienna Contemporary", value: "[[Vienna Contemporary]]" }
+      - { name: City, label: Stadt, widget: string, required: false }
+      - { name: Address, label: Adresse, widget: string, required: false, hint: "Leer lassen, wenn die Adresse des Orts stimmt — die wird dann genommen." }
+      - name: Type
+        label: Format
+        widget: select
+        required: false
+        options:
+          - { label: "Einzelausstellung", value: Solo }
+          - { label: "Duo", value: Duo }
+          - { label: "Gruppenausstellung", value: Group }
+          - { label: "Projekt", value: Project }
+      - name: Artists
+        label: "Beteiligte Künstler:innen"
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: "Lisa Reiter", value: "Lisa Reiter" }
+          - { label: "Daniel Hafner", value: "[[Daniel Hafner]]" }
+          - { label: "Edda Strobl", value: "[[Edda Strobl]]" }
+          - { label: "Lauren Jetty", value: "[[Lauren Jetty]]" }
+          - { label: "Simon Goritschnig", value: "[[Simon Goritschnig]]" }
+          - { label: "Simon Reitmann", value: "[[Simon Reitmann]]" }
+          - { label: "Sonnhild Essl", value: "[[Sonnhild Essl]]" }
+          - { label: "Tom Marseiler", value: "[[Tom Marseiler]]" }
+      - { name: Website, label: Website, widget: string, required: false }
+      - { name: Excerpt, label: Kurzbeschreibung, widget: text, required: false }
+      - { name: Slug, label: Adresse auf der Website, widget: string, required: false }
+      - name: body
+        label: Text
+        widget: markdown
+        modes: [raw]
+        required: false
+        hint: "Am Ende stehen Dataview-Blöcke in ```-Zäunen. Die gehören Obsidian — bitte stehen lassen."
+
+  # ── Werkgruppen ────────────────────────────────────────────────────────────
+  - name: series
+    label: Werkgruppen
+    label_singular: Werkgruppe
+    folder: Series
+    slug: "{{SeriesName}}"
+    identifier_field: SeriesName
+    summary: "{{SeriesName}}"
+    create: true
+    fields:
+      - { name: type, widget: hidden, default: series }
+      - { name: SeriesName, label: Name, widget: string, required: true }
+      - { name: TitleEN, label: "Name englisch", widget: string, required: false, hint: "Steht so auf der Website." }
+      - { name: Publish, label: Auf der Website zeigen, widget: boolean, default: false }
+      - { name: StartYear, label: "Begonnen", widget: number, value_type: int, min: 1990, max: 2100, required: false }
+      - name: Status
+        label: Status
+        widget: select
+        required: false
+        options:
+          - { label: "läuft weiter", value: ongoing }
+          - { label: "abgeschlossen", value: closed }
+      - { name: Slug, label: Adresse auf der Website, widget: string, required: false }
+      - name: body
+        label: Beschreibung
+        widget: markdown
+        modes: [raw]
+        required: false
+        hint: "Am Ende stehen Dataview-Blöcke in ```-Zäunen. Die gehören Obsidian — bitte stehen lassen."
+
+  # ── Orte ───────────────────────────────────────────────────────────────────
+  # Ohne Textfeld: der Fließtext dieser Notizen besteht praktisch nur aus
+  # Dataview-Blöcken. Sveltia laesst ihn unangetastet, wenn er hier fehlt.
+  - name: venues
+    label: Orte
+    label_singular: Ort
+    folder: Venues
+    slug: "{{Name}}"
+    identifier_field: Name
+    summary: "{{Name}} · {{City}}"
+    create: true
+    sortable_fields: [Name, City]
+    fields:
+      - { name: type, widget: hidden, default: venue }
+      - { name: Name, label: Name, widget: string, required: true }
+      - { name: City, label: Stadt, widget: string, required: false }
+      - { name: Address, label: Adresse, widget: string, required: false }
+      - { name: Website, label: Website, widget: string, required: false }
+      - { name: Publish, label: "Im Register zeigen", widget: boolean, default: true }
+      - { name: Slug, label: Adresse auf der Website, widget: string, required: false }
+
+  # ── Künstler:innen ─────────────────────────────────────────────────────────
+  - name: artists
+    label: "Künstler:innen"
+    label_singular: "Künstler:in"
+    folder: Artists
+    slug: "{{Name}}"
+    identifier_field: Name
+    summary: "{{Name}}"
+    create: true
+    fields:
+      - { name: type, widget: hidden, default: artist }
+      - { name: Name, label: Name, widget: string, required: true }
+      - { name: Website, label: Website, widget: string, required: false }
+      - { name: Instagram, label: Instagram, widget: string, required: false }
+      - { name: Publish, label: "Im Register zeigen", widget: boolean, default: true }
+      - { name: Slug, label: Adresse auf der Website, widget: string, required: false }
+
+  # ── Seiten ─────────────────────────────────────────────────────────────────
+  # Drei feste Notizen (Lebenslauf deutsch und englisch, Impressum). Nichts
+  # anzulegen, nichts zu loeschen.
+  - name: pages
+    label: Seiten
+    label_singular: Seite
+    folder: Pages
+    create: false
+    delete: false
+    identifier_field: name
+    summary: "{{filename}}"
+    fields:
+      - { name: type, widget: hidden, default: text }
+      - { name: name, label: Name, widget: string, required: false }
+      - { name: email, label: "E-Mail", widget: string, required: false }
+      - { name: instagram, label: Instagram, widget: string, required: false }
+      - { name: geboren, label: Geboren, widget: string, required: false }
+      - { name: geburtsland, label: Geburtsland, widget: string, required: false }
+      - { name: lebt_in, label: "Lebt in", widget: string, required: false }
+      - { name: adresse, label: Adresse, widget: string, required: false }
+      - name: body
+        label: Text
+        widget: markdown
+        modes: [raw]
+        required: false
